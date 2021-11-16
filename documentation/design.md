@@ -41,4 +41,4 @@ onEnd() -
 * filterByCat(String field, String value) - filters the visualization based on specific value per category (ie: only show values for countries in North America)
 * filterByValue(String field, ArrayList<int> range) - filters the visualization based on a range of values for a specific field (ie: only show countries with an infant mortality rate between 0-5 percent)
 * undoFilters() - undoes the filters and display all information originally designed for the data display
-
+#
