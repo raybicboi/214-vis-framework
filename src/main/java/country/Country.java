@@ -1,4 +1,4 @@
-package src.main.country;
+package country;
 
 import java.time.Year;
 import java.util.List;
