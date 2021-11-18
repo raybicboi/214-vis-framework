@@ -10,6 +10,6 @@ public interface DataPlugin {
 
     public void extractData();
 
-    public void extractData(Date start, Date end);
+    public void extractData(Date start, Date end); // convert time to Date type
 
 }
