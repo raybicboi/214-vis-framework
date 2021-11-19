@@ -124,19 +124,11 @@ public class ApiPlugin implements DataPlugin {
 
     }
 
-   // @Override -- Change back to normal..
     /**
      * Returns a set of all the {@link Country} that were acquired from the
      * API and built to include all numerical data.
      * @return {@link Set} of the countries.
      */
-    public static Set<Country> extractDataStaticForTesting() {
-        JsonNode node = getAllData(apiUrl);
-        Set<Country> res = buildCountries(node);
-        //System.out.println(res);
-        return res;
-    }
-
     @Override
     public Set<Country> extractData() {
         return countries;
