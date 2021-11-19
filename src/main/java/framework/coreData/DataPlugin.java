@@ -1,15 +1,15 @@
 package framework.coreData;
 
+import country.Country;
+
 import java.util.Date;
+import java.util.Set;
 
 public interface DataPlugin {
 
-    public void importData(String url);
+    void importData(String url);
 
-    public void getOptions(int[] options);
+    void getOptions(int[] options);
 
-    public void extractData();
-
-    public void extractData(Date start, Date end); // convert time to Date type
-
+    Set<Country> extractData();
 }
