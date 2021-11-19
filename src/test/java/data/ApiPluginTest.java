@@ -17,6 +17,8 @@ public class ApiPluginTest {
     @Before
     public void setUp() {
         a = new ApiPlugin();
+        a.importData("https://api.api-ninjas.com/v1/" +
+                "country?min_gdp=1");
         japan = a.extractData().stream().filter
                         (x -> x.getName().equals("Japan"))
                 .collect(Collectors.toList()).get(0);
@@ -53,6 +55,12 @@ public class ApiPluginTest {
     @Test
     public void testCorrectRegion() {
         assertEquals("Eastern Asia", japan.getRegion());
+    }
+
+    @Test
+    public void printData() {
+        Set<Country> r = a.extractData();
+        r.forEach(x -> System.out.println(x.printData()));
     }
 }
 

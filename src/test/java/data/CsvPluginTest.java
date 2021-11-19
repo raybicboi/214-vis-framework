@@ -1,11 +1,18 @@
 package data;
 
+import country.Country;
 import junit.framework.TestCase;
+import org.junit.Test;
 
-public class CsvPluginTest extends TestCase {
+import java.util.Set;
 
-    public void testImportData() {
+public class CsvPluginTest {
+
+    @Test
+    public void printData() {
         CsvPlugin csvPlugin = new CsvPlugin();
         csvPlugin.importData("test.csv");
+        Set<Country> res = csvPlugin.extractData();
+        res.forEach(x -> System.out.println(x.printData()));
     }
 }
