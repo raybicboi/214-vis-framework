@@ -1,24 +1,49 @@
 package country;
 
-import java.time.Year;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Country
+ *
+ * Each country stores numerous (numerical) data points.
+ * The country also has a name and a region that it belongs to.
+ */
 public class Country {
     private final String name;
-    private final int id;
-    private final String continent;
-    private Map<Year, List<Integer>> data;
+    private final String region;
+    private Map<String, Double> data;
 
     /**
-     * Constructor. Sets the name and the country ID.
+     * Constructor. Sets the name and region
      * @param name
-     * @param id
      */
-    public Country(String name, int id, String continent) {
+    public Country(String name, String region) {
         this.name = name;
-        this.id = id;
-        this.continent = continent;
+        this.region = region;
+    }
+
+    /**
+     * Returns the count of fields of numerical information that this country
+     * is storing.
+     * @return an integer
+     */
+    public int dataPointCount() {
+        return data.size();
+    }
+
+    /**
+     * Returns the {@link double} data value for the given field, or 0.0
+     * if not found.
+     * @param field
+     * @return {@link double}
+     */
+    public double getDataPoint(String field) {
+        try {
+            return data.get(field).doubleValue();
+        } catch (NullPointerException e) {
+            return 0.0;
+        }
     }
 
     /**
@@ -30,20 +55,61 @@ public class Country {
     }
 
     /**
-     * Returns the name of this country's continent.
+     * Returns the name of this country's region.
      * @return {@code String}
      */
-    public String getContinent() {
-        return continent;
+    public String getRegion() {
+        return region;
     }
 
     /**
-     * Sets the data for this country. Each key is an ordered list of
-     * data points corresponding to a predetermined set of parameters.
-     * @param data
+     * Sets the data for this country.
+     * @param data - a String |--> Double {@code Map} where keys are the names
+     *             of fields and vals are a {@code double} corresponding
+     *             to that field.
      */
-    public void setData(Map<Year, List<Integer>> data) {
+    public void setData(Map<String, Double> data) {
         this.data = data;
     }
 
+    /**
+     * toString for the country
+     * @return {@code String}
+     */
+    @Override
+    public String toString() {
+        return "Country: " + name + " Region: " + region;
+    }
+
+    /**
+     * Returns a string representation of this country's data.
+     * @return {@code String}
+     */
+    public String printData() {
+        List<Double> vals = data.values().stream().toList();
+        List<String> keys = data.keySet().stream().toList();
+        String pBreak = "========================";
+        String res = this + "\n" + pBreak + pBreak + "\n";
+        if (keys.size() != vals.size()) {
+            return res;
+        }
+
+        for (int i = 0; i < keys.size(); i++) {
+            String k = keys.get(i);
+            Double v = vals.get(i);
+            if (k != null && v != null)
+                res += k + " : " + v + "\n";
+        }
+
+        return res;
+    }
+
+    /**
+     * Adds a data point to the existing map.
+     * @param fieldName - the string representing the name of the field
+     * @param value - the {@link Double} numerical value for the given field.
+     */
+    public void addDataPoint(String fieldName, Double value) {
+        data.put(fieldName,value);
+    }
 }
