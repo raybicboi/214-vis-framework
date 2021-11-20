@@ -3,7 +3,8 @@ package data;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import country.Country;
-import framework.coreData.DataPlugin;
+import framework.core.DataPlugin;
+import framework.core.Framework;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -145,6 +146,11 @@ public class CsvPlugin implements DataPlugin {
     }
 
 
+    @Override
+    public void onRegister(Framework f) {
+
+    }
+
     /**
      * Given the name from the CSV file, imports the data and stores it as
      * a set of countries in the private field that this class stores
@@ -159,11 +165,6 @@ public class CsvPlugin implements DataPlugin {
         countries.forEach(x -> System.out.println(x.printData()));
     }
 
-    @Override
-    public void getOptions(int[] options) {
-
-    }
-
     /**
      * Extracts the country information in the form of a set.
      * @return the countries, assuming the data has already been imported.
@@ -171,5 +172,10 @@ public class CsvPlugin implements DataPlugin {
     @Override
     public Set<Country> extractData() {
         return countries;
+    }
+
+    @Override
+    public String getPluginName() {
+        return null;
     }
 }

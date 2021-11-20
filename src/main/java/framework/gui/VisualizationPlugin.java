@@ -9,4 +9,6 @@ public interface VisualizationPlugin {
     String getPluginName();
 
     String getLink();
+
+    void getOptions(int[] options);
 }

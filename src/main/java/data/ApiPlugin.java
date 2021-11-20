@@ -6,7 +6,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import country.Country;
-import framework.coreData.DataPlugin;
+import framework.core.DataPlugin;
+import framework.core.Framework;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -114,14 +115,14 @@ public class ApiPlugin implements DataPlugin {
     }
 
     @Override
-    public void importData(String url) {
-        JsonNode node = getAllData(apiUrl);
-        countries = buildCountries(node);
+    public void onRegister(Framework f) {
+
     }
 
     @Override
-    public void getOptions(int[] options) {
-
+    public void importData(String url) {
+        JsonNode node = getAllData(apiUrl);
+        countries = buildCountries(node);
     }
 
     /**

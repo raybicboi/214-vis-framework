@@ -28,10 +28,16 @@ public class App extends NanoHTTPD {
         super(8080);
 
         this.f = new Framework();
+
+        // initialize the plugin lists
+        dataPlugins = loadDataPlugins();
+        visPlugins = loadVisPlugins();
+
         dataPlugins.forEach(x -> f.registerDataPlugin(x));
         visPlugins.forEach(x -> f.registerVisPlugin(x));
+
         Handlebars handlebars = new Handlebars();
-        this.template = handlebars.compile("template");
+        this.template = handlebars.compile("optionScreen");
 
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
         System.out.println("\nRunning! Point your browsers to http://localhost:8080/ \n");
@@ -39,11 +45,11 @@ public class App extends NanoHTTPD {
     }
 
 
-//    @Override
-//    public Response serve(IHTTPSession session) {
-//        try {
-//            String uri = session.getUri();
-//            Map<String, String> params = session.getParms();
+    @Override
+    public Response serve(IHTTPSession session) {
+        try {
+            String uri = session.getUri();
+            Map<String, String> params = session.getParms();
 //            if (uri.equals("/plugin")) {
 //                game.startNewGame(plugins.get(Integer.parseInt(params.get("i"))));
 //            } else if (uri.equals("/play")){
@@ -51,15 +57,14 @@ public class App extends NanoHTTPD {
 //                    game.playMove(Integer.parseInt(params.get("x")), Integer.parseInt(params.get("y")));
 //                }
 //            }
-//            // Extract the view-specific data from the game and apply it to the template.
-//            GameState gameplay = GameState.forGame(this.game);
-//            String HTML = this.template.apply(gameplay);
-//            return newFixedLengthResponse(HTML);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
+            GraphDisplay screen = GraphDisplay.forPlugin(this.f);
+            String HTML = this.template.apply(screen);
+            return newFixedLengthResponse(HTML);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 
     /**
