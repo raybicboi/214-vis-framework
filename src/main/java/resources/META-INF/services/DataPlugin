@@ -1,0 +1,5 @@
+# List of plugins to be registered by framework.
+# Provide fully qualified class names here
+# with one plugin per line.
+hw6-analytics-framework-teamdk.src.main.java.data.ApiPlugin
+hw6-analytics-framework-teamdk.src.main.java.data.CsvPlugin
