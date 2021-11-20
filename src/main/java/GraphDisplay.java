@@ -25,7 +25,7 @@ public class GraphDisplay {
         List<String> dataPlugins = f.getRegisteredDataPluginNames();
         Plugin[] plugins = new Plugin[dataPlugins.size()];
         for (int i = 0; i < dataPlugins.size(); i++){
-            String link = "/plugin?i="+ i;
+            String link = "/dat_plugin?i="+ i;
             plugins[i] = new Plugin(dataPlugins.get(i), link);
         }
         return plugins;
@@ -35,7 +35,7 @@ public class GraphDisplay {
         List<String> visPlugins = f.getRegisteredDataPluginNames();
         Plugin[] plugins = new Plugin[visPlugins.size()];
         for (int i = 0; i < visPlugins.size(); i++){
-            String link = "/plugin?i="+ i;
+            String link = "/vis_plugin?i="+ i;
             plugins[i] = new Plugin(visPlugins.get(i), link);
         }
         return plugins;
