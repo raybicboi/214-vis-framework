@@ -79,7 +79,7 @@ public class Framework {
     public void importData() {
         currDataPlugin.importData("");
         activeData = currDataPlugin.extractData().stream().collect(Collectors.toList());
-        //System.out.println(activeData);
+       // System.out.println(activeData);
     }
 
 //    public void display() {
@@ -91,8 +91,12 @@ public class Framework {
     }
 
     public String getCurrentExtraJS() {
-        if (currVisPlugin != null)
+        if (activeData.isEmpty() && currDataPlugin != null)
+            importData();
+        if (currVisPlugin != null) {
+            //System.out.println(currVisPlugin.getExtraJS() + " DOLEV");
             return currVisPlugin.getExtraJS();
+        }
         return "";
     }
 }

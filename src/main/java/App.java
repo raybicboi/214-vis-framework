@@ -54,10 +54,10 @@ public class App extends NanoHTTPD {
             if (uri.equals("/dat_plugin")) {
                 int i = (Integer.parseInt(params.get("i")));
                 DataPlugin dP = dataPlugins.get(i);
-                System.out.println(f.getRegisteredVisPluginNames());
+               // System.out.println(f.getRegisteredVisPluginNames());
                 f.setDataPlugin(dP);
                 f.importData();
-                System.out.println(f.getCurrentDataPluginName());
+                //System.out.println(f.getCurrentDataPluginName());
             } else if (uri.equals("/vis_plugin")){
                 int i = (Integer.parseInt(params.get("i")));
                 VisualizationPlugin vP = visPlugins.get(i);

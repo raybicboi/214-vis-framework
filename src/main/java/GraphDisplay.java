@@ -67,16 +67,16 @@ public class GraphDisplay {
     }
 
     public String getExtraJS() {
-        return """
-            var data = [{
-            type: 'bar',
-                    x: [20, 14, 23],
-            y: ['giraffes', 'orangutans', 'monkeys'],
-            orientation: 'h'
-        }];
-
-        Plotly.newPlot('hBarChart', data);""";
-       //return extraJS;
+//        return """
+//            var data = [{
+//            type: 'bar',
+//                    x: [20, 14, 23],
+//            y: ['giraffes', 'orangutans', 'monkeys'],
+//            orientation: 'h'
+//        }];
+//
+//        Plotly.newPlot('hBarChart', data);""";
+       return extraJS;
         //return "alert(\"foo\");";
     }
 }

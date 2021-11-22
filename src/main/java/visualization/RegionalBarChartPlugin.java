@@ -5,6 +5,7 @@ import framework.core.Framework;
 import framework.gui.VisualizationPlugin;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class RegionalBarChartPlugin implements VisualizationPlugin {
@@ -19,6 +20,7 @@ public class RegionalBarChartPlugin implements VisualizationPlugin {
     private Map<String, List<Double>> cData;
     //maps regions to lists of mean accumulated values corresponding to the data fields
     private Map<String, List<Double>> mcData;
+    private Framework f;
 
 
     @Override
@@ -26,6 +28,7 @@ public class RegionalBarChartPlugin implements VisualizationPlugin {
         REGION_COUNT = DEFAULT_REGION_COUNT;
         extractFromFramework(f);
         buildCategoricalData();
+        this.f = f;
     }
 
     public void extractFromFramework(Framework f) {
@@ -111,6 +114,10 @@ public class RegionalBarChartPlugin implements VisualizationPlugin {
     }
 
     public Map<String, Double> forChart(String field, boolean mean) {
+        if (dataFields.isEmpty())
+            getDataFields();
+        if (mcData.isEmpty() && cData.isEmpty())
+            buildCategoricalData();
         Map<String, Double> res = new HashMap<>();
         Map<String, List<Double>> data = mean ? mcData : cData;
         if (!dataFields.contains(field))
@@ -120,31 +127,24 @@ public class RegionalBarChartPlugin implements VisualizationPlugin {
         for (String r : regions) {
             res.put(r, data.get(r).get(loc));
         }
-        //System.out.println("hello " + res);
+       // System .out.println("hello " + res);
 
         return trimToRegionCount(res,true);
     }
 
     private Map<String, Double> trimToRegionCount(Map<String, Double> res, boolean max) {
-        Map<String, Double> res2 = new HashMap<>();
-        for (int i = 0; i < REGION_COUNT; i++) {
-            Map.Entry<String, Double> extrEntry = null;
+        List<Map.Entry<String, Double>> list = new ArrayList<>(res.entrySet());
+        list.sort(Map.Entry.comparingByValue());
+        List<Map.Entry<String,Double>> sub;
+        if (!max) {
+            sub = list.subList(0, REGION_COUNT);
 
-            for (Map.Entry<String, Double> entry : res.entrySet()) {
-                if (extrEntry == null)
-                    continue;
-                boolean greater = entry.getValue().compareTo(extrEntry.getValue()) > 0;
-                if ((max && greater) || (!max && !greater)) {
-                    extrEntry = entry;
-                }
-            }
-            if (extrEntry != null) {
-                res2.put(extrEntry.getKey(), extrEntry.getValue());
-                res.remove(extrEntry.getKey(), extrEntry.getValue());
-            }
+        } else {
+            sub = list.subList(list.size() - REGION_COUNT, list.size());
         }
-        //System.out.println(res2);
-        return res2;
+        Map<String, Double> map =
+                sub.stream().collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
+        return map;
     }
 
     @Override
@@ -170,7 +170,9 @@ public class RegionalBarChartPlugin implements VisualizationPlugin {
 
     @Override
     public String getExtraJS() {
-        Map<String, Double> forChart = forChart("Population",false);
+        if (data.isEmpty())
+            extractFromFramework(f);
+        Map<String, Double> forChart = forChart("population",false);
         //System.out.println(getJS(forChart));
         return getJS(forChart);
     }
@@ -186,11 +188,10 @@ public class RegionalBarChartPlugin implements VisualizationPlugin {
             Y += addApos(k) + ",";
         }
         String X = "x: " + vals + ",\n";
-        int yLen = Y.length();
-        Y =  Y.substring(0,yLen - 1) + "],\n";
+        Y += "],\n";
         String orientation = "orientation: 'h'\n" + "}];";
         String plotly = "\n Plotly.newPlot('hBarChart', data);";
-        System.out.println(result + X + Y + orientation + plotly);
+        //System.out.println(result + X + Y + orientation + plotly);
         return result + X + Y + orientation + plotly;
     }
 
