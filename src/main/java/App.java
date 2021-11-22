@@ -7,6 +7,7 @@ import com.github.jknack.handlebars.Template;
 import fi.iki.elonen.NanoHTTPD;
 import framework.core.DataPlugin;
 import framework.core.Framework;
+import framework.gui.GraphDisplay;
 import framework.gui.VisualizationPlugin;
 
 public class App extends NanoHTTPD {
@@ -25,7 +26,7 @@ public class App extends NanoHTTPD {
     }
 
     public App() throws IOException {
-        super(8080);
+        super(8090);
 
         this.f = new Framework();
 
@@ -40,7 +41,7 @@ public class App extends NanoHTTPD {
         this.template = handlebars.compile("optionScreen");
 
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
-        System.out.println("\nRunning! Point your browsers to http://localhost:8080/ \n");
+        System.out.println("\nRunning! Point your browsers to http://localhost:8090/ \n");
 
     }
 
@@ -50,13 +51,16 @@ public class App extends NanoHTTPD {
         try {
             String uri = session.getUri();
             Map<String, String> params = session.getParms();
-//            if (uri.equals("/plugin")) {
-//                game.startNewGame(plugins.get(Integer.parseInt(params.get("i"))));
-//            } else if (uri.equals("/play")){
-//                if (game.hasGame()) {
-//                    game.playMove(Integer.parseInt(params.get("x")), Integer.parseInt(params.get("y")));
-//                }
-//            }
+            if (uri.equals("/dat_plugin")) {
+                int i = (Integer.parseInt(params.get("i")));
+                DataPlugin dP = dataPlugins.get(i);
+                System.out.println(f.getRegisteredDataPluginNames());
+                f.setDataPlugin(dP);
+            } else if (uri.equals("/vis_plugin")){
+                int i = (Integer.parseInt(params.get("i")));
+                VisualizationPlugin vP = visPlugins.get(i);
+                f.setVisPlugin(vP);
+            }
             GraphDisplay screen = GraphDisplay.forPlugin(this.f);
             String HTML = this.template.apply(screen);
             return newFixedLengthResponse(HTML);
@@ -68,7 +72,7 @@ public class App extends NanoHTTPD {
 
 
     /**
-     * Load data plugins listed in META-INF/services/DataPlugin
+     * Load data plugins listed in META-INF/services/framework.core.DataPlugin
      *
      * @return List of instantiated data plugins
      */
@@ -83,7 +87,7 @@ public class App extends NanoHTTPD {
     }
 
     /**
-     * Load visualization plugins listed in META-INF/services/VisualizationPlugin
+     * Load visualization plugins listed in META-INF/services/framework.gui.VisualizationPlugin
      *
      * @return List of instantiated visualization plugins
      */

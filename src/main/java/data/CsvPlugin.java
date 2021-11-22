@@ -15,6 +15,8 @@ public class CsvPlugin implements DataPlugin {
 
     private Set<Country> countries;
 
+    private static final String CSV_PLUGIN =
+            "CSV File Data Plugin";
     /**
      * Given the name of a CSV file, reads it into a list of string arrays,
      * where each string array represents a row of the file.
@@ -176,6 +178,6 @@ public class CsvPlugin implements DataPlugin {
 
     @Override
     public String getPluginName() {
-        return null;
+        return CSV_PLUGIN;
     }
 }

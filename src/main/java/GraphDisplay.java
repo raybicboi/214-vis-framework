@@ -1,7 +1,6 @@
-import framework.core.DataPlugin;
+package framework.gui;
+
 import framework.core.Framework;
-import framework.gui.Plugin;
-import framework.gui.VisualizationPlugin;
 
 import java.util.List;
 
@@ -32,12 +31,27 @@ public class GraphDisplay {
     }
 
     private static Plugin[] getVisPlugins(Framework f) {
-        List<String> visPlugins = f.getRegisteredDataPluginNames();
+        List<String> visPlugins = f.getRegisteredVisPluginNames();
         Plugin[] plugins = new Plugin[visPlugins.size()];
         for (int i = 0; i < visPlugins.size(); i++){
             String link = "/vis_plugin?i="+ i;
             plugins[i] = new Plugin(visPlugins.get(i), link);
         }
         return plugins;
+    }
+
+//    private static Dropdown[] getDropdowns(Framework f) {
+//        String text = game.getSquare(x,y);
+//        String link = "/play?x="+x+"&y="+y;
+//        cells[width * y + x] = new Cell(text, clazz, link);
+//        return cells;
+//    }
+
+    public Plugin[] getDataPlugins() {
+        return this.dataPlugins;
+    }
+
+    public Plugin[] getVisPlugins() {
+        return this.visPlugins;
     }
 }

@@ -1,9 +1,12 @@
 package framework.core;
 
+import country.Country;
 import framework.gui.VisualizationPlugin;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Framework {
@@ -15,21 +18,33 @@ public class Framework {
     private List<DataPlugin> registeredDataPlugins;
     private List<VisualizationPlugin> registeredVisPlugins;
     private String footer;
+    private Set<Country> activeData;
 
     public Framework() {
         footer = DEFAULT_FOOTER;
         registeredVisPlugins = new ArrayList<VisualizationPlugin>();
         registeredDataPlugins = new ArrayList<DataPlugin>();
+        activeData = new HashSet<>();
     }
 
     public void registerDataPlugin(DataPlugin p) {
-        p.onRegister(this);
-        registeredDataPlugins.add(p);
+        String name = p.getPluginName();
+        if (registeredDataPlugins.stream().
+                filter(x -> x.getPluginName().equals(name)).
+                collect(Collectors.toList()).isEmpty()) {
+            p.onRegister(this);
+            registeredDataPlugins.add(p);
+        }
     }
 
     public void registerVisPlugin(VisualizationPlugin p) {
-        p.onRegister(this);
-        registeredVisPlugins.add(p);
+        String name = p.getPluginName();
+        if (registeredVisPlugins.stream().
+                filter(x -> x.getPluginName().equals(name)).
+                collect(Collectors.toList()).isEmpty()) {
+            p.onRegister(this);
+            registeredVisPlugins.add(p);
+        }
     }
 
     public List<String> getRegisteredDataPluginNames(){

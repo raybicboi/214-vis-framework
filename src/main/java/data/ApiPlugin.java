@@ -30,14 +30,15 @@ public class ApiPlugin implements DataPlugin {
     private static final String apiUrl = "https://api.api-ninjas.com/v1/" +
                                             "country?min_gdp=1";
 
-    private static final String pluginName = "API Country Data Plugin";
+    private static final String API_COUNTRY_DATA_PLUGIN =
+            "API Country Data Plugin";
 
     /**
      * Return the name of this plugin.
      * @return {@link String}
      */
     public String getPluginName() {
-        return pluginName;
+        return API_COUNTRY_DATA_PLUGIN;
     }
 
     /**
