@@ -13,6 +13,11 @@ public class BubbleChartPlugin implements VisualizationPlugin {
     }
 
     @Override
+    public void resetData() {
+
+    }
+
+    @Override
     public String getExtraJS() {return "";}
     @Override
     public String getPluginName() {

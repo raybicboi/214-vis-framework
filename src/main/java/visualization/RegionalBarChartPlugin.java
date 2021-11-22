@@ -129,7 +129,7 @@ public class RegionalBarChartPlugin implements VisualizationPlugin {
         }
        // System .out.println("hello " + res);
 
-        return trimToRegionCount(res,true);
+        return trimToRegionCount(res,false);
     }
 
     private Map<String, Double> trimToRegionCount(Map<String, Double> res, boolean max) {
@@ -197,5 +197,13 @@ public class RegionalBarChartPlugin implements VisualizationPlugin {
 
     private String addApos(String x) {
         return "'" + x + "'";
+    }
+
+    @Override
+    public void resetData() {
+        data = new ArrayList<>();
+        dataFields = new ArrayList<>();
+        cData = new HashMap<>();
+        mcData = new HashMap<>();
     }
 }

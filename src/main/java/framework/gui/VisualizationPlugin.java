@@ -14,4 +14,6 @@ public interface VisualizationPlugin {
     void getOptions(int[] options);
 
     String getExtraJS();
+
+    void resetData();
 }
