@@ -2,6 +2,7 @@ package country;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Country
@@ -21,6 +22,10 @@ public class Country {
     public Country(String name, String region) {
         this.name = name;
         this.region = region;
+    }
+
+    public Set<String> fieldSet() {
+        return data.keySet();
     }
 
     /**
@@ -43,6 +48,15 @@ public class Country {
             return data.get(field).doubleValue();
         } catch (NullPointerException e) {
             return 0.0;
+        }
+    }
+
+    public boolean hasDataPoint(String field) {
+        try {
+            double x =  data.get(field).doubleValue();
+            return true;
+        } catch (NullPointerException e) {
+            return false;
         }
     }
 

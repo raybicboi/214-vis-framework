@@ -14,4 +14,6 @@ public interface DataPlugin {
     Set<Country> extractData();
 
     String getPluginName();
+
+    void begin();
 }

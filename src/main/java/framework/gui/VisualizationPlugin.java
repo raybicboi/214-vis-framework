@@ -1,5 +1,6 @@
 package framework.gui;
 
+
 import framework.core.Framework;
 
 public interface VisualizationPlugin {
@@ -11,4 +12,6 @@ public interface VisualizationPlugin {
     String getLink();
 
     void getOptions(int[] options);
+
+    String getExtraJS();
 }

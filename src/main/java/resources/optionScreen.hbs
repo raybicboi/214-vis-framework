@@ -3,12 +3,19 @@
 
 <head>
   <title>{{name}}</title>
+  <script src='https://cdn.plot.ly/plotly-2.6.3.min.js'></script>
   <script>
   /* When the user clicks on the button,
   toggle between hiding and showing the dropdown content */
   function myFunction() {
     document.getElementById("myDropdown").classList.toggle("show");
   }
+  function myFunction2() {
+    document.getElementById("myDropdown2").classList.toggle("show");
+  }
+  function myFunction3() {
+      eval(document.getElementById("displayDiv").innerHTML);
+    }
   // Close the dropdown menu if the user clicks outside of it
   window.onclick = function(event) {
     if (!event.target.matches('.dropbtn')) {
@@ -22,26 +29,66 @@
       }
     }
   }
+  /*{{extraJS}}*/
   </script>
   <style>
-    /* Dropdown Button */
+      /* Dropdown Button */
+      .dropbtn {
+        width: 100%;
+        height: 5vh;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        float: left;
+        font-size: 2vw
+        cursor: pointer;
+      }
+
+    .textLink {
+        position: relative;
+    }
+
+    .dropdown {
+      position: relative;
+    }
     /* Dropdown Content (Hidden by Default) */
     /* Links inside the dropdown */
     /* Change color of dropdown links on hover */
     .dropdown-content a:hover {background-color: #ddd}
+        /* Dropdown Content (Hidden by Default) */
+        .dropdown-content {
+          display: none;
+          position: absolute;
+          background-color: #f1f1f1;
+          width: 100%;
+          height = 5vh;
+          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+          z-index: 1;
+          text-align: center;
+        }
+
+
+    /* Links inside the dropdown */
+    .dropdown-content a {
+      color: black;
+     font-size: 2vw;
+      height: 5vh;
+      text-decoration: none;
+      display: block;
+    }
     /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
     .show {display:block;}
     #bottombar {
       height: 5vh;
     }
-    #game_name {
+   /* #game_name {
       height: 5vh;
       background-color: white;
       padding: 0px;
       margin: 0px;
       text-align: center;
       border: 1px solid black;
-    }
+    }*/
     #bottombar button {
       width: 100%;
       height: 100%;
@@ -74,15 +121,6 @@
 
 
 <body>
-{{!--   <div id="game_name">{{name}}</div> --}}
-{{!--   {{#if gameOverMsg}} --}}
-{{!--     <div id="game_over_message">{{gameOverMsg}}</div> --}}
-{{!--     {{else}} --}}
-{{!--       {{#if currentPlayer}} --}}
-{{!--         <div id="current_player_name">Current player is {{currentPlayer}}</div> --}}
-{{!--         {{/if}} --}}
-{{!--     {{/if}} --}}
-
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet"/>
 <div class="dropdownMenus col-md-12">
   <div class='form-field'>
@@ -95,14 +133,25 @@
   </div>
 
   <div class='form-field'>
-      <button onclick="myFunction()" class="dropbtn">Select Visualization Plugin</button>
-      <div id="myDropdown" class="dropdown-content">
+      <button onclick="myFunction2()" class="dropbtn">Select Visualization Plugin</button>
+      <div id="myDropdown2" class="dropdown-content">
           {{#each visPlugins}}
           <a href="{{link}}">{{name}}</a>
           {{/each}}
       </div>
   </div>
 </div>
+
+{{!--   <div class="row"> --}}
+{{!--     <input type="text" id="txtNewInputFormula" placeholder="Enter formula" value="{{formula}}"> --}}
+{{!--   </div> --}}
+{{!-- <form action="/action_page.php"> --}}
+{{!--   <label for="fname">First name:</label> --}}
+{{!--   <input type="text" id="fname" name="fname"><br><br> --}}
+{{!--   <label for="lname">Last name:</label> --}}
+{{!--   <input type="text" id="lname" name="lname"><br><br> --}}
+{{!--   <input type="submit" value="Submit"> --}}
+{{!-- </form> --}}
 
 {{!--   <div class='form-field'> --}}
 {{!--     <label for=''>Data Plugin</label> --}}
@@ -115,8 +164,8 @@
 {{!--     </select> --}}
 {{!--   </div> --}}
 
-{{!--   <div class='form-field'> --}}
-{{!--     <label for=''>Visualization Plugin</label> --}}
+{{!--   <div class='text-box'> --}}
+{{!--     <label for=''>Input for plugin</label> --}}
 {{!--     <select id='' class='form-control'> --}}
 {{!--       <option>Choose Plugin</option> --}}
 {{!--       {{#each visPlugins}} --}}
@@ -124,10 +173,21 @@
 {{!--         <a href="{{link}}">{{name}}</a> --}}
 {{!--       {{/each}} --}}
 {{!--     </select> --}}
-{{!--   </div> --}}
+  </div>
 
+  <div id='displayDiv'>
+       {{extraJS}}
+  </div>
+  <div id='hBarChart'>
+  <!-- Plotly chart will be drawn inside this DIV -->
+  </div>
+<button onclick="myFunction3()">Click Me</button>
 </body>
-
+<script>
+  console.log(document.getElementById('displayDiv'))
+  console.log("afbfdergewfdvfbrtrewfdvfbr")
+  console.log(document.getElementById('displayDiv'))
+  </script>
 <!-- import the the tic.ts file generated by browserify -->
 <script src="tic.js"></script>
 

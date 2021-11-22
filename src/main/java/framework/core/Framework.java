@@ -18,13 +18,13 @@ public class Framework {
     private List<DataPlugin> registeredDataPlugins;
     private List<VisualizationPlugin> registeredVisPlugins;
     private String footer;
-    private Set<Country> activeData;
+    private List<Country> activeData;
 
     public Framework() {
         footer = DEFAULT_FOOTER;
         registeredVisPlugins = new ArrayList<VisualizationPlugin>();
         registeredDataPlugins = new ArrayList<DataPlugin>();
-        activeData = new HashSet<>();
+        activeData = new ArrayList<>();
     }
 
     public void registerDataPlugin(DataPlugin p) {
@@ -47,12 +47,12 @@ public class Framework {
         }
     }
 
-    public List<String> getRegisteredDataPluginNames(){
+    public List<String> getRegisteredDataPluginNames() {
         return registeredDataPlugins.stream().map(x -> x.getPluginName()).
-                                                collect(Collectors.toList());
+                collect(Collectors.toList());
     }
 
-    public List<String> getRegisteredVisPluginNames(){
+    public List<String> getRegisteredVisPluginNames() {
         return registeredVisPlugins.stream().map(x -> x.getPluginName()).
                 collect(Collectors.toList());
     }
@@ -62,12 +62,37 @@ public class Framework {
             currDataPlugin = p;
         registerDataPlugin(p);
         currDataPlugin = p;
+
     }
 
     public void setVisPlugin(VisualizationPlugin p) {
-        if (registeredDataPlugins.contains(p))
+        if (registeredVisPlugins.contains(p))
             currVisPlugin = p;
         registerVisPlugin(p);
         currVisPlugin = p;
+    }
+
+    public String getCurrentDataPluginName() {
+        return currDataPlugin.getPluginName();
+    }
+
+    public void importData() {
+        currDataPlugin.importData("");
+        activeData = currDataPlugin.extractData().stream().collect(Collectors.toList());
+        //System.out.println(activeData);
+    }
+
+//    public void display() {
+//        currVisPlugin.
+//    }
+
+    public List<Country> getActiveData() {
+        return activeData;
+    }
+
+    public String getCurrentExtraJS() {
+        if (currVisPlugin != null)
+            return currVisPlugin.getExtraJS();
+        return "";
     }
 }

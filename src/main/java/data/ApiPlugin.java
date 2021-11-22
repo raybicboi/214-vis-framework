@@ -136,4 +136,7 @@ public class ApiPlugin implements DataPlugin {
         return countries;
     }
 
+    @Override
+    public void begin() {}
+
 }

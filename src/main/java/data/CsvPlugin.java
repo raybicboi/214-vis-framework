@@ -116,6 +116,7 @@ public class CsvPlugin implements DataPlugin {
                 try {
                     dMap.put(fields.get(j), Double.parseDouble(cData.get(j)));
                 } catch (NumberFormatException e) {}
+                  catch (IndexOutOfBoundsException e) {}
             } //adds nothing to map if data is not a double
             Country c = new Country(name, region);
             c.setData(dMap);
@@ -161,10 +162,10 @@ public class CsvPlugin implements DataPlugin {
      */
     @Override
     public void importData(String csvFile) {
-        List<String[]> resIntermediate = readCSVToList("test.csv");
+        List<String[]> resIntermediate = readCSVToList("testLarger.csv");
         List<List<String>> data = convertDataIntermediate(resIntermediate);
         countries = buildCountries(data);
-        countries.forEach(x -> System.out.println(x.printData()));
+        //countries.forEach(x -> System.out.println(x.printData()));
     }
 
     /**
@@ -180,4 +181,7 @@ public class CsvPlugin implements DataPlugin {
     public String getPluginName() {
         return CSV_PLUGIN;
     }
+
+    @Override
+    public void begin() { }
 }

@@ -13,6 +13,8 @@ public class BubbleChartPlugin implements VisualizationPlugin {
     }
 
     @Override
+    public String getExtraJS() {return "";}
+    @Override
     public String getPluginName() {
         return PLUGIN_NAME;
     }
@@ -25,5 +27,10 @@ public class BubbleChartPlugin implements VisualizationPlugin {
     @Override
     public void getOptions(int[] options) {
         System.out.println("tmp");
+    }
+
+    @Override
+    public String toString() {
+        return PLUGIN_NAME;
     }
 }
