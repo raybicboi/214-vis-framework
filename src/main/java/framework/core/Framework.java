@@ -32,7 +32,7 @@ public class Framework {
         if (registeredDataPlugins.stream().
                 filter(x -> x.getPluginName().equals(name)).
                 collect(Collectors.toList()).isEmpty()) {
-            p.onRegister(this);
+//            p.onRegister(this);
             registeredDataPlugins.add(p);
         }
     }

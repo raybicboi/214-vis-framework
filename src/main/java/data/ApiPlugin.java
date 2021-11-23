@@ -33,10 +33,7 @@ public class ApiPlugin implements DataPlugin {
     private static final String API_COUNTRY_DATA_PLUGIN =
             "API Country Data Plugin";
 
-    /**
-     * Return the name of this plugin.
-     * @return {@link String}
-     */
+    @Override
     public String getPluginName() {
         return API_COUNTRY_DATA_PLUGIN;
     }
@@ -57,7 +54,6 @@ public class ApiPlugin implements DataPlugin {
             InputStream responseStream = connection.getInputStream();
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readTree(responseStream);
-
 
         } catch (Exception e) {
             //TODO: figure out error handling
@@ -112,27 +108,14 @@ public class ApiPlugin implements DataPlugin {
     }
 
     @Override
-    public void onRegister(Framework f) {
-
-    }
-
-    @Override
     public void importData(String url) {
         JsonNode node = getAllData(apiUrl);
         countries = buildCountries(node);
     }
 
-    /**
-     * Returns a set of all the {@link Country} that were acquired from the
-     * API and built to include all numerical data.
-     * @return {@link Set} of the countries.
-     */
     @Override
     public Set<Country> extractData() {
         return countries;
     }
-
-    @Override
-    public void begin() {}
 
 }

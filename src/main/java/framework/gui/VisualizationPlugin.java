@@ -3,8 +3,6 @@ package framework.gui;
 
 import framework.core.Framework;
 
-import java.awt.*;
-
 public interface VisualizationPlugin {
 
     /**

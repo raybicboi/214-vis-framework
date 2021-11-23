@@ -17,6 +17,7 @@ public class CsvPlugin implements DataPlugin {
 
     private static final String CSV_PLUGIN =
             "CSV File Data Plugin";
+
     /**
      * Given the name of a CSV file, reads it into a list of string arrays,
      * where each string array represents a row of the file.
@@ -146,30 +147,13 @@ public class CsvPlugin implements DataPlugin {
         return countries;
     }
 
-
-    @Override
-    public void onRegister(Framework f) {
-
-    }
-
-    /**
-     * Given the name from the CSV file, imports the data and stores it as
-     * a set of countries in the private field that this class stores
-     * (countries) Set.
-     * @param csvFile - e.g. "myFile.csv"
-     */
     @Override
     public void importData(String csvFile) {
         List<String[]> resIntermediate = readCSVToList("testLarger.csv");
         List<List<String>> data = convertDataIntermediate(resIntermediate);
         countries = buildCountries(data);
-        //countries.forEach(x -> System.out.println(x.printData()));
     }
 
-    /**
-     * Extracts the country information in the form of a set.
-     * @return the countries, assuming the data has already been imported.
-     */
     @Override
     public Set<Country> extractData() {
         return countries;
@@ -180,6 +164,4 @@ public class CsvPlugin implements DataPlugin {
         return CSV_PLUGIN;
     }
 
-    @Override
-    public void begin() { }
 }
