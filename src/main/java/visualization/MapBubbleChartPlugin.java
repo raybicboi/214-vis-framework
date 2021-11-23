@@ -7,9 +7,9 @@ import framework.gui.VisualizationPlugin;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class PieChartPlugin implements VisualizationPlugin {
+public class MapBubbleChartPlugin  implements VisualizationPlugin {
 
-    private static final String PLUGIN_NAME = "Pie Chart Plugin";
+    private static final String PLUGIN_NAME = "Map Bubble Chart Plugin Plugin";
     private static final int DEFAULT_REGION_COUNT = 5;
     private int REGION_COUNT;
     private List<Country> data;
@@ -62,45 +62,60 @@ public class PieChartPlugin implements VisualizationPlugin {
     }
 
     /**
+     * Gets a list of the names of all the different countries that are represented
+     * @return {@code List<String>}
+     */
+    public List<String> getCountryNames() {
+        List<String> countryNames = new ArrayList<>();
+        for (Country c : data) {
+            String country = c.getName();
+            if (!countryNames.contains(country)) {
+                countryNames.add(country);
+            }
+        }
+        return countryNames;
+    }
+
+    /**
      * Builds the categorical data available. Sets the {@field cData} to
-     * a map where keys are region names and values are lists of doubles,
-     * accumulated across the fields for countries belonging to this region.
+     * a map where keys are country names and values are lists of doubles,
+     * accumulated across the fields for countries belonging to this country.
      * Sets {@field mcData} to the same, expect that values are averaged
-     * across regions.
+     * across country.
      */
     private void buildCategoricalData() {
         getDataFields();
         Map<String, List<Double>> dataByCat = new HashMap<>();
         Map<String, List<Double>> meanDataByCat = new HashMap<>();
-        List<String> regionNames = getRegionNames();
-        //computing data points (both sum and mean) across regions
-        for (String rName : regionNames) {
+        List<String> countryNames = getCountryNames();
+        //computing data points (both sum and mean) across countries
+        for (String cName : countryNames) {
             List<Double> accumVals = new ArrayList<>();
-            List<Integer> countPerFieldInRegion = new ArrayList<>();
+            List<Integer> countPerFieldInCountry = new ArrayList<>();
             //init
             for (int i = 0; i < dataFields.size(); i++) {
                 accumVals.add(0.0);
-                countPerFieldInRegion.add(0);
+                countPerFieldInCountry.add(0);
             }
             for (Country c : data) {
-                if (c.getRegion().equals(rName)) {
+                if (c.getName().equals(cName)) {
                     for (int i = 0; i < dataFields.size(); i++) {
                         double d = accumVals.get(i);
                         double n = c.getDataPoint(dataFields.get(i));
                         accumVals.set(i,d + n);
-                        int count = countPerFieldInRegion.get(i);
+                        int count = countPerFieldInCountry.get(i);
                         int m = c.hasDataPoint(dataFields.get(i)) ? count + 1 : count;
-                        countPerFieldInRegion.set(i,m);
+                        countPerFieldInCountry.set(i,m);
                     }
                 }
             }
-            dataByCat.put(rName, accumVals);
+            dataByCat.put(cName, accumVals);
 
             List<Double> meanAccumVals = new ArrayList<>();
             for (int i = 0; i < accumVals.size(); i++) {
-                meanAccumVals.add(accumVals.get(i) / countPerFieldInRegion.get(i));
+                meanAccumVals.add(accumVals.get(i) / countPerFieldInCountry.get(i));
             }
-            meanDataByCat.put(rName, meanAccumVals);
+            meanDataByCat.put(cName, meanAccumVals);
         }
         cData = dataByCat;
         mcData = meanDataByCat;
@@ -171,34 +186,77 @@ public class PieChartPlugin implements VisualizationPlugin {
         if (data.isEmpty())
             extractFromFramework(f);
         Map<String, Double> forChart = forChart("population",false);
-        //System.out.println(getJS(forChart));
         return getJS(forChart);
     }
 
     public String getJS(Map<String, Double> data) {
-        String result = "var data = [{\n";
-        result += "type: 'pie',\n";
+        String d = """
+            var data = [{
+                type: 'scattergeo',
+                mode: 'markers',\n
+                """;
         List<String> keys = data.keySet().stream().toList();
         List<Double> vals = new ArrayList<>();
-        String Y = "labels: [";
+        List<Double> vals2 = new ArrayList<>();
+        String location = "locations: [";
         for (String k : keys) {
+            String code = country2Code(k);
+            String iso3;
+            if (code != null) {
+                Locale locale = new Locale("en", code);
+                iso3 = locale.getISO3Country();
+            } else {
+                iso3 = "";
+            }
+
             vals.add(data.get(k));
-            Y += addApos(k) + ",";
+            location += addApos(iso3) + ",";
         }
-        String X = "values: " + vals + ",\n";
-        Y += "],\n";
-        String orientation = "\n" + "}];";
-        String layout = "var layout = {\n";
-        layout += "height: 400,\n";
-        layout += "width: 500\n";
-        layout += "};\n";
+        for (String k : keys) {
+            vals2.add(proportion(vals, data.get(k)));
+        }
+        location += "],\n";
+        String marker = "marker : {\n";
+        String values = "size: " +  vals2 +",\n";
+        String color = """
+                cmin: 0,
+                cmax: 30,
+                line: {
+                    color: 'black'
+                }
+            },
+        }];\n""";
+        String layout = """
+            var layout = {
+                'geo': {
+                    'scope': 'world',
+                    'resolution': 100
+                }
+            };\n""";
         String plotly = "\n Plotly.newPlot('myDiv', data, layout);";
         //System.out.println(result + X + Y + orientation + plotly);
-        return result + X + Y + orientation + layout + plotly;
+        return d + location + marker + values + color + layout + plotly;
     }
 
     private String addApos(String x) {
         return "'" + x + "'";
+    }
+
+    private String country2Code(String country) {
+        Map<String, String> countries = new HashMap<>();
+        for (String iso : Locale.getISOCountries()) {
+            Locale l = new Locale("en", iso);
+            countries.put(l.getDisplayCountry(), iso);
+        }
+        return countries.get(country);
+    }
+
+    private Double proportion(List<Double> list, Double d) {
+        Double total = 0.0;
+        for (Double dou : list) {
+            total += dou;
+        }
+        return d * 200 / total;
     }
 
     @Override

@@ -3,3 +3,4 @@
 # with one plugin per line.
 visualization.PieChartPlugin
 visualization.RegionalBarChartPlugin
+visualization.MapBubbleChartPlugin
