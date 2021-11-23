@@ -45,7 +45,6 @@ public class App extends NanoHTTPD {
 
     }
 
-
     @Override
     public Response serve(IHTTPSession session) {
         try {
@@ -72,16 +71,6 @@ public class App extends NanoHTTPD {
             return null;
         }
     }
-
-    private List<String> loadAllCountries() {
-        ArrayList<String> result = new ArrayList<String>();
-        for (Locale locale : Locale.getAvailableLocales())
-        {
-            result.add(locale.getDisplayCountry());
-        }
-        return result;
-    }
-
 
     /**
      * Load data plugins listed in META-INF/services/framework.core.DataPlugin

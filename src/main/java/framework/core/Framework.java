@@ -20,6 +20,9 @@ public class Framework {
     private String footer;
     private List<Country> activeData;
 
+    /**
+     * No arg constructor for the Framework
+     */
     public Framework() {
         footer = DEFAULT_FOOTER;
         registeredVisPlugins = new ArrayList<VisualizationPlugin>();
@@ -27,6 +30,10 @@ public class Framework {
         activeData = new ArrayList<>();
     }
 
+    /**
+     * Imports the selected data plugin onto the Framework.
+     * @param p the selected data plugin
+     */
     public void registerDataPlugin(DataPlugin p) {
         String name = p.getPluginName();
         if (registeredDataPlugins.stream().
@@ -37,6 +44,10 @@ public class Framework {
         }
     }
 
+    /**
+     * Imports the selected visualization plugin onto the Framework.
+     * @param p the selected visualization plugin
+     */
     public void registerVisPlugin(VisualizationPlugin p) {
         String name = p.getPluginName();
         if (registeredVisPlugins.stream().
@@ -47,16 +58,28 @@ public class Framework {
         }
     }
 
+    /**
+     * Returns a list of the names of all the data plugins.
+     * @return {@code List<String}
+     */
     public List<String> getRegisteredDataPluginNames() {
         return registeredDataPlugins.stream().map(x -> x.getPluginName()).
                 collect(Collectors.toList());
     }
 
+    /**
+     * Returns a list of the names of all the visualization plugins.
+     * @return {@code List<String}
+     */
     public List<String> getRegisteredVisPluginNames() {
         return registeredVisPlugins.stream().map(x -> x.getPluginName()).
                 collect(Collectors.toList());
     }
 
+    /**
+     * Selects the appropriate data plugin for later use.
+     * @param p selected data plugin
+     */
     public void setDataPlugin(DataPlugin p) {
         if (registeredDataPlugins.contains(p))
             currDataPlugin = p;
@@ -65,6 +88,10 @@ public class Framework {
 
     }
 
+    /**
+     * Selects the appropriate visualization plugin for later use.
+     * @param p selected visualization plugin
+     */
     public void setVisPlugin(VisualizationPlugin p) {
         if (registeredVisPlugins.contains(p))
             currVisPlugin = p;
@@ -72,20 +99,34 @@ public class Framework {
         currVisPlugin = p;
     }
 
+    /**
+     * Getter method for the name of the current data plugin
+     * @return {@code String}
+     */
     public String getCurrentDataPluginName() {
         return currDataPlugin.getPluginName();
     }
 
+    /**
+     * Imports the data for later use.
+     */
     public void importData() {
         currDataPlugin.importData("");
         activeData = currDataPlugin.extractData().stream().collect(Collectors.toList());
-       // System.out.println(activeData);
     }
 
+    /**
+     * Getter method that returns a list of relevant data to be passed on to the visualization.
+     * @return {@code List<Country>}
+     */
     public List<Country> getActiveData() {
         return activeData;
     }
 
+    /**
+     * Returns the JS String based on the visualization plugin selected and the data imported.
+     * @return {@code String}
+     */
     public String getCurrentExtraJS() {
         if (activeData.isEmpty() && currDataPlugin != null)
             importData();

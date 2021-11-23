@@ -24,6 +24,10 @@ public class Country {
         this.region = region;
     }
 
+    /**
+     * Returns a list of the fields (column names)
+     * @return {@code Set<String>}
+     */
     public Set<String> fieldSet() {
         return data.keySet();
     }
@@ -51,6 +55,11 @@ public class Country {
         }
     }
 
+    /**
+     * Checks whether the datapoint is null
+     * @param field
+     * @return boolean
+     */
     public boolean hasDataPoint(String field) {
         try {
             double x =  data.get(field).doubleValue();
