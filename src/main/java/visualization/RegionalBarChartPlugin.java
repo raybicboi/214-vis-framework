@@ -190,9 +190,18 @@ public class RegionalBarChartPlugin implements VisualizationPlugin {
         String X = "x: " + vals + ",\n";
         Y += "],\n";
         String orientation = "orientation: 'h'\n" + "}];";
-        String plotly = "\n Plotly.newPlot('myDiv', data);";
+        String layout = """
+            var layout = {
+                title: {
+                    text: "Top 5 Regions by Total Population",
+                    xaxis: {
+                        title: "Population in Thousands"
+                    }
+                }
+            }\n""";
+        String plotly = "\n Plotly.newPlot('myDiv', data, layout);";
         //System.out.println(result + X + Y + orientation + plotly);
-        return result + X + Y + orientation + plotly;
+        return result + X + Y + orientation + layout + plotly;
     }
 
     private String addApos(String x) {
