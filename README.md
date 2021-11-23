@@ -64,3 +64,7 @@ the scatterplot- but two numerical fields will be needed instead than one.
 The App class contains methods for loading all the data and visualization plugins, so there are no
 modifications needed in the App, ScreenDisplay, or optionsScreen.hbs files. However, after
 implementing the interfaces, the file path must be added in the META-INF.services folder.
+
+That being said, in the handlebar file, comment out "display: none;" for the display div when
+doing implementation; you will be able to view the JS string on the UI, which makes 
+debugging much easier.
