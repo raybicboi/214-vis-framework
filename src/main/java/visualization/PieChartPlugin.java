@@ -7,9 +7,9 @@ import framework.gui.VisualizationPlugin;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BubbleChartPlugin implements VisualizationPlugin {
+public class PieChartPlugin implements VisualizationPlugin {
 
-    private static final String PLUGIN_NAME = "Bubble Chart Chart Plugin";
+    private static final String PLUGIN_NAME = "Pie Chart Plugin";
     private static final int DEFAULT_REGION_COUNT = 5;
     private int REGION_COUNT;
     private List<Country> data;

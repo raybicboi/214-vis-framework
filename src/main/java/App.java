@@ -61,6 +61,8 @@ public class App extends NanoHTTPD {
                 f.setDataPlugin(dP);
                 f.importData();
                 //System.out.println(f.getCurrentDataPluginName());
+                Locale locale = new Locale("en", "US");
+                System.out.println(locale.getISO3Country());
             } else if (uri.equals("/vis_plugin")){
                 int i = (Integer.parseInt(params.get("i")));
                 VisualizationPlugin vP = visPlugins.get(i);

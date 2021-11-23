@@ -190,7 +190,7 @@ public class RegionalBarChartPlugin implements VisualizationPlugin {
         String X = "x: " + vals + ",\n";
         Y += "],\n";
         String orientation = "orientation: 'h'\n" + "}];";
-        String plotly = "\n Plotly.newPlot('hBarChart', data);";
+        String plotly = "\n Plotly.newPlot('myDiv', data);";
         //System.out.println(result + X + Y + orientation + plotly);
         return result + X + Y + orientation + plotly;
     }
