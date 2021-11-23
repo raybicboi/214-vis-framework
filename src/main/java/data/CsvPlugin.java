@@ -77,8 +77,6 @@ public class CsvPlugin implements DataPlugin {
         return resCopy;
     }
 
-    public static void main(String[] args) {}
-
     /**
      * Given the nested list representing data from the CSV file and an
      * index, extracts the values in the zth column of the dataset, excluding

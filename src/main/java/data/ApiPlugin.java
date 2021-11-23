@@ -111,10 +111,6 @@ public class ApiPlugin implements DataPlugin {
         return res;
     }
 
-    public static void main(String[] args) {
-        //extractDataStaticForTesting();
-    }
-
     @Override
     public void onRegister(Framework f) {
 

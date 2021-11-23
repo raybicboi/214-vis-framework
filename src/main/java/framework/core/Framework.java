@@ -82,10 +82,6 @@ public class Framework {
        // System.out.println(activeData);
     }
 
-//    public void display() {
-//        currVisPlugin.
-//    }
-
     public List<Country> getActiveData() {
         return activeData;
     }
@@ -94,7 +90,6 @@ public class Framework {
         if (activeData.isEmpty() && currDataPlugin != null)
             importData();
         if (currVisPlugin != null) {
-            //System.out.println(currVisPlugin.getExtraJS() + " DOLEV");
             return currVisPlugin.getExtraJS();
         }
         return "";

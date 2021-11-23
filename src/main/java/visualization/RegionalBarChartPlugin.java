@@ -31,7 +31,11 @@ public class RegionalBarChartPlugin implements VisualizationPlugin {
         this.f = f;
     }
 
-    public void extractFromFramework(Framework f) {
+    /**
+     * Private helper method that gets the data from the framework, which is called
+     * in onRegister
+     */
+    private void extractFromFramework(Framework f) {
         data = f.getActiveData();
     }
 
@@ -39,7 +43,7 @@ public class RegionalBarChartPlugin implements VisualizationPlugin {
      * Extracts and stores the list of data fields in use by the countrys
      * in the data being stored.
      */
-    public void getDataFields() {
+    private void getDataFields() {
         Set<String> fields = new HashSet<>();
         for (Country c : data) {
             fields.addAll(c.fieldSet());
@@ -52,7 +56,7 @@ public class RegionalBarChartPlugin implements VisualizationPlugin {
      * in the set of countries.
      * @return {@code List<String>}
      */
-    public List<String> getRegionNames() {
+    private List<String> getRegionNames() {
         List<String> regionNames = new ArrayList<>();
         for (Country c : data) {
             String region = c.getRegion();
@@ -113,7 +117,14 @@ public class RegionalBarChartPlugin implements VisualizationPlugin {
         return PLUGIN_NAME;
     }
 
-    public Map<String, Double> forChart(String field, boolean mean) {
+    /**
+     * Helper function that assists in building the final data format, based on whether we
+     * want to visualize values or mean of values.
+     * @param field the column from the dataset chosen to measure
+     * @param mean a flag of whether to use mean values
+     * @return {@code Map<String, Double>}
+     */
+    private Map<String, Double> forChart(String field, boolean mean) {
         if (dataFields.isEmpty())
             getDataFields();
         if (mcData.isEmpty() && cData.isEmpty())
@@ -127,11 +138,17 @@ public class RegionalBarChartPlugin implements VisualizationPlugin {
         for (String r : regions) {
             res.put(r, data.get(r).get(loc));
         }
-       // System .out.println("hello " + res);
 
         return trimToRegionCount(res,false);
     }
 
+    /**
+     * Helper function that limits the inputs used for the visualization based on a
+     * specific target.
+     * @param res the entire dataset passed into the visualization plugin
+     * @param max the number of rows of data points we want
+     * @return {@code Map<String, Double>}
+     */
     private Map<String, Double> trimToRegionCount(Map<String, Double> res, boolean max) {
         List<Map.Entry<String, Double>> list = new ArrayList<>(res.entrySet());
         list.sort(Map.Entry.comparingByValue());
@@ -148,24 +165,24 @@ public class RegionalBarChartPlugin implements VisualizationPlugin {
     }
 
     @Override
-    public void getOptions(int[] options) {}
-
-    @Override
     public String toString() {
         return PLUGIN_NAME;
     }
 
+    /**
+     * Getter method for max number of regions used for the visualization
+     * @return {@code int}
+     */
     public int getRegionCount() {
         return REGION_COUNT;
     }
 
+    /**
+     * Setter method for providing the max number of regions used for the visualization
+     * @param REGION_COUNT the max number of regions
+     */
     public void setRegionCount(int REGION_COUNT) {
         this.REGION_COUNT = REGION_COUNT;
-    }
-
-    @Override
-    public String getLink() {
-        return null;
     }
 
     @Override
@@ -173,11 +190,15 @@ public class RegionalBarChartPlugin implements VisualizationPlugin {
         if (data.isEmpty())
             extractFromFramework(f);
         Map<String, Double> forChart = forChart("population",false);
-        //System.out.println(getJS(forChart));
         return getJS(forChart);
     }
 
-    public String getJS(Map<String, Double> data) {
+    /**
+     * Private helper method that gets the JS String for the graph to be passed into plot.ly
+     * @param data the final cleaned data set to pass in
+     * @return {@code String}
+     */
+    private String getJS(Map<String, Double> data) {
         String result = "var data = [{\n";
         result += "type: 'bar',\n";
         List<String> keys = data.keySet().stream().toList();
@@ -200,7 +221,6 @@ public class RegionalBarChartPlugin implements VisualizationPlugin {
                 }
             }\n""";
         String plotly = "\n Plotly.newPlot('myDiv', data, layout);";
-        //System.out.println(result + X + Y + orientation + plotly);
         return result + X + Y + orientation + layout + plotly;
     }
 

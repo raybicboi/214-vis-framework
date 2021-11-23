@@ -54,15 +54,11 @@ public class App extends NanoHTTPD {
             if (uri.equals("/dat_plugin")) {
                 int i = (Integer.parseInt(params.get("i")));
                 DataPlugin dP = dataPlugins.get(i);
-               // System.out.println(f.getRegisteredVisPluginNames());
                 for (VisualizationPlugin v : visPlugins) {
                     v.resetData();
                 }
                 f.setDataPlugin(dP);
                 f.importData();
-                //System.out.println(f.getCurrentDataPluginName());
-//                Locale locale = new Locale("en", "Canada");
-//                System.out.println(locale.getISO3Country());
             } else if (uri.equals("/vis_plugin")){
                 int i = (Integer.parseInt(params.get("i")));
                 VisualizationPlugin vP = visPlugins.get(i);
@@ -75,6 +71,15 @@ public class App extends NanoHTTPD {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private List<String> loadAllCountries() {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Locale locale : Locale.getAvailableLocales())
+        {
+            result.add(locale.getDisplayCountry());
+        }
+        return result;
     }
 
 

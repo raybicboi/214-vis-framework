@@ -14,9 +14,9 @@ public class MapBubbleChartPlugin  implements VisualizationPlugin {
     private int REGION_COUNT;
     private List<Country> data;
     private List<String> dataFields;
-    //maps regions to lists of accumulated values corresponding to the data fields
+    //maps countries to lists of accumulated values corresponding to the data fields
     private Map<String, List<Double>> cData;
-    //maps regions to lists of mean accumulated values corresponding to the data fields
+    //maps countries to lists of mean accumulated values corresponding to the data fields
     private Map<String, List<Double>> mcData;
     private Framework f;
 
@@ -29,7 +29,11 @@ public class MapBubbleChartPlugin  implements VisualizationPlugin {
         this.f = f;
     }
 
-    public void extractFromFramework(Framework f) {
+    /**
+     * Private helper method that gets the data from the framework, which is called
+     * in onRegister
+     */
+    private void extractFromFramework(Framework f) {
         data = f.getActiveData();
     }
 
@@ -37,7 +41,7 @@ public class MapBubbleChartPlugin  implements VisualizationPlugin {
      * Extracts and stores the list of data fields in use by the countries
      * in the data being stored.
      */
-    public void getDataFields() {
+    private void getDataFields() {
         Set<String> fields = new HashSet<>();
         for (Country c : data) {
             fields.addAll(c.fieldSet());
@@ -46,26 +50,10 @@ public class MapBubbleChartPlugin  implements VisualizationPlugin {
     }
 
     /**
-     * Gets a list of the names of all the different regions that are represented
-     * in the set of countries.
-     * @return {@code List<String>}
-     */
-    public List<String> getRegionNames() {
-        List<String> regionNames = new ArrayList<>();
-        for (Country c : data) {
-            String region = c.getRegion();
-            if (!regionNames.contains(region)) {
-                regionNames.add(region);
-            }
-        }
-        return regionNames;
-    }
-
-    /**
      * Gets a list of the names of all the different countries that are represented
      * @return {@code List<String>}
      */
-    public List<String> getCountryNames() {
+    private List<String> getCountryNames() {
         List<String> countryNames = new ArrayList<>();
         for (Country c : data) {
             String country = c.getName();
@@ -90,6 +78,9 @@ public class MapBubbleChartPlugin  implements VisualizationPlugin {
         List<String> countryNames = getCountryNames();
         //computing data points (both sum and mean) across countries
         for (String cName : countryNames) {
+//            List<String> allCountries = loadAllCountries();
+            if (null == country2Code(cName)) continue;
+//            if (!allCountries.contains(cName)) continue;
             List<Double> accumVals = new ArrayList<>();
             List<Integer> countPerFieldInCountry = new ArrayList<>();
             //init
@@ -126,7 +117,14 @@ public class MapBubbleChartPlugin  implements VisualizationPlugin {
         return PLUGIN_NAME;
     }
 
-    public Map<String, Double> forChart(String field, boolean mean) {
+    /**
+     * Helper function that assists in building the final data format, based on whether we
+     * want to visualize values or mean of values.
+     * @param field the column from the dataset chosen to measure
+     * @param mean a flag of whether to use mean values
+     * @return {@code Map<String, Double>}
+     */
+    private Map<String, Double> forChart(String field, boolean mean) {
         if (dataFields.isEmpty())
             getDataFields();
         if (mcData.isEmpty() && cData.isEmpty())
@@ -140,11 +138,16 @@ public class MapBubbleChartPlugin  implements VisualizationPlugin {
         for (String r : regions) {
             res.put(r, data.get(r).get(loc));
         }
-        // System .out.println("hello " + res);
-
         return trimToRegionCount(res,false);
     }
 
+    /**
+     * Helper function that limits the inputs used for the visualization based on a
+     * specific target.
+     * @param res the entire dataset passed into the visualization plugin
+     * @param max the number of rows of data points we want
+     * @return {@code Map<String, Double>}
+     */
     private Map<String, Double> trimToRegionCount(Map<String, Double> res, boolean max) {
         List<Map.Entry<String, Double>> list = new ArrayList<>(res.entrySet());
         list.sort(Map.Entry.comparingByValue());
@@ -160,25 +163,26 @@ public class MapBubbleChartPlugin  implements VisualizationPlugin {
         return map;
     }
 
-    @Override
-    public void getOptions(int[] options) {}
 
     @Override
     public String toString() {
         return PLUGIN_NAME;
     }
 
+    /**
+     * Getter method for max number of regions used for the visualization
+     * @return {@code int}
+     */
     public int getRegionCount() {
         return REGION_COUNT;
     }
 
+    /**
+     * Setter method for providing the max number of regions used for the visualization
+     * @param REGION_COUNT the max number of regions
+     */
     public void setRegionCount(int REGION_COUNT) {
         this.REGION_COUNT = REGION_COUNT;
-    }
-
-    @Override
-    public String getLink() {
-        return null;
     }
 
     @Override
@@ -189,7 +193,12 @@ public class MapBubbleChartPlugin  implements VisualizationPlugin {
         return getJS(forChart);
     }
 
-    public String getJS(Map<String, Double> data) {
+    /**
+     * Private helper method that gets the JS String for the graph to be passed into plot.ly
+     * @param data the final cleaned data set to pass in
+     * @return {@code String}
+     */
+    private String getJS(Map<String, Double> data) {
         String d = """
             var data = [{
                 type: 'scattergeo',
@@ -208,12 +217,13 @@ public class MapBubbleChartPlugin  implements VisualizationPlugin {
             } else {
                 iso3 = "";
             }
-
             vals.add(data.get(k));
             location += addApos(iso3) + ",";
         }
         for (String k : keys) {
-            vals2.add(proportion(vals, data.get(k)));
+            Double prop = proportion(vals, data.get(k));
+            if (prop > 0.0) vals2.add(prop);
+            else vals2.add(0.0);
         }
         location += "],\n";
         String marker = "marker : {\n";
@@ -234,7 +244,6 @@ public class MapBubbleChartPlugin  implements VisualizationPlugin {
                 }
             };\n""";
         String plotly = "\n Plotly.newPlot('myDiv', data, layout);";
-        //System.out.println(result + X + Y + orientation + plotly);
         return d + location + marker + values + color + layout + plotly;
     }
 
@@ -242,6 +251,11 @@ public class MapBubbleChartPlugin  implements VisualizationPlugin {
         return "'" + x + "'";
     }
 
+    /**
+     * Private helper method converts a string value of a country into its ISO2 code
+     * @param country the name of the country
+     * @return {@code String}
+     */
     private String country2Code(String country) {
         Map<String, String> countries = new HashMap<>();
         for (String iso : Locale.getISOCountries()) {
@@ -251,12 +265,31 @@ public class MapBubbleChartPlugin  implements VisualizationPlugin {
         return countries.get(country);
     }
 
+    /**
+     * Private helper method that determines the size of the bubble to be displayed.
+     * @param list the entire list of double values
+     * @param d the specific value in the list being compared
+     * @return {@code Double}
+     */
     private Double proportion(List<Double> list, Double d) {
         Double total = 0.0;
         for (Double dou : list) {
             total += dou;
         }
-        return d * 200 / total;
+        return d * Double.valueOf(DEFAULT_REGION_COUNT) * 40 / total;
+    }
+
+    /**
+     * Uses the Locale package in Java to return a String list of all countries.
+     * @return {@code List<String>}
+     */
+    private List<String> loadAllCountries() {
+        ArrayList<String> result = new ArrayList<String>();
+        for (Locale locale : Locale.getAvailableLocales())
+        {
+            result.add(locale.getDisplayCountry());
+        }
+        return result;
     }
 
     @Override
