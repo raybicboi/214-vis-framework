@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The twitter plugin takes in a csv file in the visframework directory of texts and timestamps
+ * and returns a list of </Value>
+ */
 public class CSVDataPlugin implements DataPlugin {
 
     public static void main(String args[]) throws IOException, URISyntaxException {
@@ -17,9 +21,8 @@ public class CSVDataPlugin implements DataPlugin {
     }
 
     /**
-     * Download reddit comments based on post from the reddit API and returns
-     * a list of comments.
-     * @param json JSONObject from front end with twitter user name
+     * 'Download' csv file and converts the contents into List<Value> format
+     * @param json JSONObject from front end that is the name of the csv file
      * @return list of </Value>
      */
     @Override
@@ -28,7 +31,12 @@ public class CSVDataPlugin implements DataPlugin {
         return convertCSVToValue(imported);
     }
 
-    public static List<List<String>> readCSVToList(JSONObject config) {
+    /**
+     * Reads csv file and converts content into a 2D array
+     * @param config JSONObject from front end that is the name of the csv file
+     * @return List\<List<String>>> 2D array with each inner array as a row of datapoint
+     */
+    private static List<List<String>> readCSVToList(JSONObject config) {
         List<List<String>> result = new ArrayList<>();
         try {
             String filePath = config.getString("dataSourceUrl");
@@ -50,6 +58,11 @@ public class CSVDataPlugin implements DataPlugin {
         return result;
     }
 
+    /**
+     * Reads in the converted csv contents and converts to common data format for the framework
+     * @param input the 2d list of converted csv contents
+     * @return List\<Value> to be put into the framework
+     */
     private List<Value> convertCSVToValue(List<List<String>> input) {
         List<Value> result = new ArrayList<>();
         for (List<String> subList : input) {
