@@ -184,7 +184,7 @@ const DynForm = () => {
                                 type="text"
                                 className="form-control"
                                 value={inputField.dataSourceName}
-                                placeholder={"e.g. youtube/twitter/news"}
+                                placeholder={"e.g. youtube/twitter/news/csv/instagram"}
                                 onChange={event => handleInputChangeDName(index, event)}
                             />
                         </label>
@@ -196,7 +196,7 @@ const DynForm = () => {
                                 type="text"
                                 className="form-control"
                                 value={inputField.dataSourceUrl}
-                                placeholder={"e.g. youtube url/twitter userid/keyword"}
+                                placeholder={"e.g. youtube url/twitter userid/keyword/test.txt/#hashtag or @user"}
                                 onChange={event => handleInputChangeDUrl(index, event)}
                             />
                         </label>
@@ -238,7 +238,7 @@ const DynForm = () => {
                                     type="text"
                                     className="form-control"
                                     value={inputField.visSourceName}
-                                    placeholder={"e.g. bar/pie/heapmap"}
+                                    placeholder={"e.g. bar/pie/heapmap/timeseries"}
                                     onChange={event => handleInputChangeVName(index, event)}
                                 />
                             </label>
