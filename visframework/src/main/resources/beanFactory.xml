@@ -1,0 +1,23 @@
+<beans xmlns="http://www.springframework.org/schema/beans"        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean name="youtubeDataPlugin" class="edu.cs.visframework.dao.YtDataPlugin">
+    </bean>
+    <bean name="twitterDataPlugin" class="edu.cs.visframework.dao.TwitterDataPlugin">
+    </bean>
+    <bean name="newsDataPlugin" class="edu.cs.visframework.dao.NewsDataPlugin">
+    </bean>
+    <bean name="csvDataPlugin" class="edu.cs.visframework.dao.CSVDataPlugin">
+    </bean>
+
+    <bean name="barVisPlugin" class="edu.cs.visframework.dao.BarPlugin">
+    </bean>
+    <bean name="heatmapVisPlugin" class="edu.cs.visframework.dao.HeatMapPlugin">
+    </bean>
+    <bean name="pieVisPlugin" class="edu.cs.visframework.dao.PiePlugin">
+    </bean>
+
+
+    <!-- example adding data plugins -->
+    <bean name="testDataPlugin" id="testDataPlugin" class="edu.cs.visframework.dao.TestDataPlugin">
+    </bean>
+</beans>
