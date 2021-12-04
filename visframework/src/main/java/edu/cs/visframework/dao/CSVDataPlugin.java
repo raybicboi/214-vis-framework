@@ -17,7 +17,7 @@ public class CSVDataPlugin implements DataPlugin {
     public static void main(String args[]) throws IOException, URISyntaxException {
         DataPlugin newsPlugin = new CSVDataPlugin();
         List returnArray = newsPlugin.download(null);
-        System.out.println(returnArray.toString());
+//        System.out.println(returnArray.toString());
     }
 
     /**
@@ -49,7 +49,24 @@ public class CSVDataPlugin implements DataPlugin {
                 String row;
                 while ((row = reader.readLine()) != null) {
                     String[] values = row.split(",");
-                    result.add(Arrays.asList(values));
+                    List<String> tmp = Arrays.asList(values);
+                    List<String> inter = new ArrayList<>();
+                    if (tmp.size() != 2) {
+                        String inner = "";
+                        String last = "";
+                        for (int i = 0; i < tmp.size(); i++) {
+                            if (i != tmp.size() - 1) {
+                                inner = inner + tmp.get(i);
+                            } else {
+                                last = tmp.get(i);
+                            }
+                        }
+                        inter.add(inner);
+                        inter.add(last);
+                    } else {
+                        inter = tmp;
+                    }
+                    result.add(inter);
                 }
             }
         } catch (IOException e) {
@@ -67,8 +84,8 @@ public class CSVDataPlugin implements DataPlugin {
         List<Value> result = new ArrayList<>();
         for (List<String> subList : input) {
             if (subList.size() == 2) {
-                System.out.println(subList.get(0));
-                System.out.println(subList.get(1));
+//                System.out.println(subList.get(0));
+//                System.out.println(subList.get(1));
                 String text = subList.get(0);
                 String time = subList.get(1);
                 double score = 2.0;
@@ -78,5 +95,4 @@ public class CSVDataPlugin implements DataPlugin {
         }
         return result;
     }
-
 }
