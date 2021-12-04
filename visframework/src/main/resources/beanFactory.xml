@@ -8,12 +8,16 @@
     </bean>
     <bean name="csvDataPlugin" class="edu.cs.visframework.dao.CSVDataPlugin">
     </bean>
+    <bean name="instagramDataPlugin" class="edu.cs.visframework.dao.InstagramDataPlugin">
+    </bean>
 
     <bean name="barVisPlugin" class="edu.cs.visframework.dao.BarPlugin">
     </bean>
     <bean name="heatmapVisPlugin" class="edu.cs.visframework.dao.HeatMapPlugin">
     </bean>
     <bean name="pieVisPlugin" class="edu.cs.visframework.dao.PiePlugin">
+    </bean>
+    <bean name="timeseriesVisPlugin" class="edu.cs.visframework.dao.TimeSeriesPlugin">
     </bean>
 
 
