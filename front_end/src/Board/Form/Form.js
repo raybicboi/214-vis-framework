@@ -196,7 +196,7 @@ const DynForm = () => {
                                 type="text"
                                 className="form-control"
                                 value={inputField.dataSourceUrl}
-                                placeholder={"e.g. youtube url/twitter userid/keyword/test.txt/#hashtag or @user"}
+                                placeholder={"e.g. url/@userid/keyword/test.txt/#hashtag,@user"}
                                 onChange={event => handleInputChangeDUrl(index, event)}
                             />
                         </label>
