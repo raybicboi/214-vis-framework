@@ -6,7 +6,7 @@ The two data plugins added is the InstagramDataPlugin and the CSVDataPlugin. Bot
 src/edu/cs/visframework/dao directory, same as the other plugins left from the original group.
 
 When launching the application, for "Data source name", you can use the existing plugins, along with 'instagram'
-and 'csv'.
+and 'csv'. The instructions for launch has not changed from the original implementation.
 
 # Instagram Plugin
 
@@ -50,7 +50,7 @@ If the instagram chart is empty, it's most likely a limitation in the API (ie: d
 the csv chart is empty, it's most likely due to a formatting issue of the data or the file doesn't exist/in 
 the wrong directory.
 
-## Original Readme from group teamhhs
+# Original Readme from group teamhhs
 # github link
 
 https://github.com/CMU-17-214/hw6-analytics-framework-teamhhs/commit/ab6c209cf78b0347aaafdcae21e72badee941f04
