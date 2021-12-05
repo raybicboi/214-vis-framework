@@ -1,5 +1,56 @@
+## Additional Readme from team-dk
 
+# Added Data Plugins
 
+The two data plugins added is the InstagramDataPlugin and the CSVDataPlugin. Both files are in the 
+src/edu/cs/visframework/dao directory, same as the other plugins left from the original group.
+
+When launching the application, for "Data source name", you can use the existing plugins, along with 'instagram'
+and 'csv'.
+
+# Instagram Plugin
+
+The instagram plugin can be used two ways. The data source url can either be a hashtag of format (#example) or
+a user of format (@user). The hashtag implementation takes in posts with that hashtag as its text values for
+analysis. The user implementation takes the comments of the posts of that user as its text values.
+
+# CSV Plugin
+
+The data source url is just the name of the csv file in the directory. It must be within the visframework directory
+to work. I provided an example test.csv in that directory that contains a little over ten data points from the 
+dogs subreddit for demonstration purposes. You can also place your csv file in a deeper directory, but the data
+source url needs to be the correct path from visframework folder as the source. If you type in a path that does
+not exist in the directory, the app will not crash- but you will get an empty graph.
+
+Mac users can try going into the CSVDataPlugin class and switching out lines 44 and 45 if there are pathing issues
+since the directory slashes are different.
+
+The format of the CSV is as follows:
+- Text        | Timestamp
+- sampleText1 | sampleTimeStamp1
+- sampleText2 | sampleTimeStamp2
+- ...
+
+Where there must be a header row, and each row only contains two elements. The text can have quotes or no quotes,
+and can also contain commas (even though we are reading csv). 
+
+The timestamp must be formatted as follows: xxxx-xx-xx@ (year-month-date), where x are digits, delimited by a 
+dash("-"). The "@" can be any character or multiple characters. It is needed just because the original implementation
+requires the length of the timestamp to be at least 11 (which may or may not be intentional).
+
+# Added Visualization Plugin
+
+The visualiation plugin used in the time series plugin, which is in the same 'dao' folder what contains all the
+other plugins. For the chart name, just write 'timeseries'.
+
+The graph is a line graph of five lines (for five degree of sentiments) that compares the relative frequency of 
+each the five levels across months.
+
+If the instagram chart is empty, it's most likely a limitation in the API (ie: does not register that user). If
+the csv chart is empty, it's most likely due to a formatting issue of the data or the file doesn't exist/in 
+the wrong directory.
+
+## Original Readme from group teamhhs
 # github link
 
 https://github.com/CMU-17-214/hw6-analytics-framework-teamhhs/commit/ab6c209cf78b0347aaafdcae21e72badee941f04

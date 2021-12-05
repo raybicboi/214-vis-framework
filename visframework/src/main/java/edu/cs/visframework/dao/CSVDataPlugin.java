@@ -40,9 +40,10 @@ public class CSVDataPlugin implements DataPlugin {
         List<List<String>> result = new ArrayList<>();
         try {
             String filePath = config.getString("dataSourceUrl");
-            String windowsPath = "src\\main\\java\\edu\\cs\\visframework\\";
-//            String macPath = "src/main/java/edu/cs/visframework";
-            String path = windowsPath + filePath;
+            // line 44 is the windows path, line 45 is the mac path
+            String firstPath = "src\\main\\java\\edu\\cs\\visframework\\";
+//            String firstPath = "src/main/java/edu/cs/visframework";
+            String path = firstPath + filePath;
 
             try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
                 reader.readLine();
