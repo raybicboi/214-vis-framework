@@ -10,13 +10,14 @@ and 'csv'. The instructions for launch has not changed from the original impleme
 
 # Instagram Plugin
 
-The instagram plugin can be used two ways. The data source url can either be a hashtag of format (#example) or
-a user of format (@user). The hashtag implementation takes in posts with that hashtag as its text values for
-analysis. The user implementation takes the comments of the posts of that user as its text values.
+To use the instagram plugin, the data source url can be one of three formats: #hashtag, hashtag, or @username. 
+For hashtag queries, captions of recent posts under that hashtag are analyzed. For username queries, the comments 
+under that user’s recent posts are analyzed. Will not work with private accounts. To see data across more of a 
+time range, try less-common hashtags or public accounts that don’t post often.
 
 # CSV Plugin
 
-The data source url is just the name of the csv file in the directory. It must be within the visframework directory
+The data source url is just the name of the csv file in the directory (including '.csv'). It must be within the visframework directory
 to work. I provided an example test.csv in that directory that contains a little over ten data points from the 
 dogs subreddit for demonstration purposes. You can also place your csv file in a deeper directory, but the data
 source url needs to be the correct path from visframework folder as the source. If you type in a path that does

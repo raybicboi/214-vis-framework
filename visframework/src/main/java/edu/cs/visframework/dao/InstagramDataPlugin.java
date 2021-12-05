@@ -23,15 +23,6 @@ public class InstagramDataPlugin implements DataPlugin {
     private String COMMENT_URL_HEAD = "comments?post=";
     private int MAX_DATA = 40;
 
-
-    public static void main(String[] args) {
-        InstagramDataPlugin idp = new InstagramDataPlugin();
-        JSONObject j = new JSONObject();
-        j.put("dataSourceUrl","@potus");
-        List<Value> v = idp.download(j);
-    }
-
-
     /**
      * Produces a list of {@code Value} that can be analyzed.
      * @param config - contains 'dataSourceUrl' attribute. The value
@@ -54,7 +45,7 @@ public class InstagramDataPlugin implements DataPlugin {
         switch (firstChar) {
             case "@":
                 var x = buildRequest(POST_URL_HEAD,rest);
-                res = handleValBuilder2(getCollectorArray(x));
+                res = usernameValBuilder(getCollectorArray(x));
                 break;
             case "#":
                 var y = buildRequest(HASH_URL_HEAD,rest);
@@ -67,14 +58,19 @@ public class InstagramDataPlugin implements DataPlugin {
         }
 
         return res;
-
     }
 
     /**
      * Gets the string which can be used to obtain a collector for
      * the comments under a post.
      * @param postFromCollection - a post json object with the attribute
-     *                           'shortcode'
+     *                           'shortcode'. e.g.
+     *                           https://www.instagram.com/p/CAVeEm1gDh2/
+     *                          produces the following shortcode:
+     *
+     *                                      'CAVeEm1gDh2'
+     * @return a string which can be interpreted as JSON containing
+     * info about a posts' comments.
      */
     private String getCommentsFromPost(JSONObject postFromCollection) {
         String shortcode = postFromCollection.getString("shortcode");
@@ -82,44 +78,86 @@ public class InstagramDataPlugin implements DataPlugin {
         return buildRequest(COMMENT_URL_HEAD, shortcode);
     }
 
-    private List<Value> handleValBuilder2(JSONArray allPostData) {
+    /**
+     * Given a JSONArray which collects info on all posts,
+     * returns a list of values built from the comments under those posts.
+     * @param allPostData
+     * @return List of {@link Value}.
+     */
+    private List<Value> usernameValBuilder(JSONArray allPostData) {
         if (allPostData.isEmpty()) {
             System.out.println("No Data to Display");
             return new ArrayList<>();
         }
-        int m = Math.min(allPostData.length(), MAX_DATA / 10);
+
+        int m = Math.min(allPostData.length(), MAX_DATA);
         List<Value> res = new ArrayList<>();
         List<JSONObject> posts = new ArrayList<>();
+
         for (int j = 0; j < m; j++) {
             JSONObject post = allPostData.getJSONObject(j);
             posts.add(post);
         }
-        List<List<Value>> y =  posts.parallelStream().map(x -> getValsFromComments(getCollectorArray(getCommentsFromPost(x)))).collect(Collectors.toList());
-        y.parallelStream().forEach(x -> res.addAll(x));
-        if (res.size() < MAX_DATA) {
-            return res;
-        }
-        System.out.println("Handle builder, ab to return ");
-        return res.subList(0,MAX_DATA);
+
+        //builds the values from each posts' comments.
+        List<List<Value>> commentsFromEachPost;
+        commentsFromEachPost = posts.parallelStream()
+                .map(x -> getValsFromComments(getCollectorArray
+                        (getCommentsFromPost(x))))
+                .collect(Collectors.toList());
+        commentsFromEachPost.parallelStream().forEach(x -> res.addAll(x));
+
+        return fixDataSize(res);
     }
 
     /**
      * Builds the values from a JSONArray containing JSONObjects that
-     * represent Intragram comments.
+     * represent Instagram comments under a single post.
      * @param comments - JSONArray containing objects with the attribute
      *                 'text'. These objects get the text from instagram values.
-     *                 They must have the attribute 'created_at'.
+     *                 They must have the attribute 'created_at' as well.
      * @return the list of values built from the comments
      */
     private List<Value> getValsFromComments(JSONArray comments) {
         List<Value> res = new ArrayList<>();
-        for (int i = 0; i < Math.min(comments.length(),10) ; i++) {
+        for (int i = 0; i < Math.min(comments.length(),MAX_DATA) ; i++) {
             JSONObject j = comments.getJSONObject(i);
             String textQ = j.getString("text");
-            String text = textQ.length() < 75 ? textQ : textQ.substring(0,75);
-            res.add(new Value(getDateString(j,false),text,2));
+            String text = textQ.length() < 130 ? textQ : textQ.substring(0,129);
+
+            res.addAll(filterAndBuild(j, text, false));
         }
-        return res;
+        return fixDataSize(res);
+    }
+
+    /**
+     * Builds a value. Returns it in a list.
+     * @param j - either a post or a comment, as JSONObject.
+     * @param text - raw text to be added to value
+     * @param hashtag - true if this is from a hashtag query, false otherwise.
+     * @return List of built {@link Value} containing only English letters and
+     *         spaces in the text field. Will only contain 0 or 1 values.
+     */
+    private List<Value> filterAndBuild(JSONObject j,String text,Boolean hashtag) {
+        List<Value> container = new ArrayList<>();
+        String filteredText = text.codePoints()
+                .filter(ch -> ch >= 'A' && ch <= 'Z'
+                        || ch >= 'a' && ch <= 'z'
+                        || ch == ' '
+                        || ch == '#')
+                .mapToObj(x -> Character.toString(x) == "#" ? " " : Character.toString(x))
+                .collect(Collectors.joining());
+        int z = 0;
+        for (int u = 0; u < filteredText.length(); u++) {
+            if (filteredText.substring(u).equals(" "))
+                z--;
+        }
+        String textFinal =  filteredText.length() < 80 ? filteredText : filteredText.substring(0,79);
+
+        if (z == 0 && !filteredText.isEmpty()) {
+            container.add(new Value(getDateString(j,hashtag),textFinal,2));
+        }
+        return container;
     }
 
     /**
@@ -135,15 +173,25 @@ public class InstagramDataPlugin implements DataPlugin {
             System.out.println("No Data to Display");
             return new ArrayList<>();
         }
-        int m = hashtagPosts.length() < 10 ? hashtagPosts.length() : 10;
+        int m = hashtagPosts.length() < MAX_DATA ? hashtagPosts.length() : MAX_DATA;
         List<Value> res = new ArrayList<>();
         for (int j = 0; j < m; j++) {
             JSONObject oj = hashtagPosts.getJSONObject(j);
-            String java_date = getDateString(oj,true);
             String desc = ((String) oj.get("description"));
-            res.add(new Value(java_date, desc, 2));
+            res.addAll(filterAndBuild(oj, desc,true));
         }
-        return res.subList(0,Math.min(res.size(),10));
+        return fixDataSize(res);
+    }
+
+    /**
+     * Fixes the size of {@param res} to within the MAX_DATA range.
+     * @param res
+     * @return The fixed result.
+     */
+    private List<Value> fixDataSize(List<Value> res) {
+        if (res == null || res.isEmpty())
+            return res;
+        return res.subList(0, Math.min(res.size() - 1, MAX_DATA));
     }
 
     /**
@@ -166,7 +214,6 @@ public class InstagramDataPlugin implements DataPlugin {
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
         jdf.setTimeZone(TimeZone.getTimeZone("GMT-4"));
         String java_date = jdf.format(date);
-        System.out.println("substr: " +  java_date.substring(5,10));
         return java_date;
     }
 
@@ -201,7 +248,6 @@ public class InstagramDataPlugin implements DataPlugin {
         HashMap<String,String> j =
                 (HashMap<String, String>) JSON.parse(jsonInDisguise);
         JSONObject json = new JSONObject(j);
-        System.out.println("In getCollector "  + json);
         return json.getJSONArray("collector");
     }
 
